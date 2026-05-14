@@ -1,0 +1,1 @@
+Write a `README.md` guide for Vivado 2024.1 and Vitis 2024.1 to use a microblaze processor that can run standalone C code and has an AXI UART and AXI gpio port
