@@ -1,4 +1,11 @@
-create_project ublaze-gpio C:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio -part xc7a100tcsg324-1
+set proj_name ublaze-gpio
+# define intermediate variables
+set current_dir [file normalize [file dirname [info script]]]
+cd $current_dir
+set repo_dir [file dirname $current_dir]
+set synth_proj_dir [file join $current_dir syn $proj_name]
+
+create_project $proj_name $synth_proj_dir -part xc7a100tcsg324-1
 set_property board_part digilentinc.com:arty-a7-100:part0:1.1 [current_project]
 set_property target_language Verilog [current_project]
 create_bd_design "ublaze_gpio"
@@ -126,17 +133,17 @@ connect_bd_net [get_bd_ports reset] [get_bd_pins proc_sys_reset_0/ext_reset_in]
 # startgroup
 # endgroup
 
-#generate_target all [get_files  C:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio/ublaze-gpio.srcs/sources_1/bd/ublaze_gpio/ublaze_gpio.bd]
+#generate_target all [get_files [file join $synth_proj_dir ${proj_name}.srcs sources_1 bd ublaze_gpio ublaze_gpio.bd]]
 assign_bd_address
 set_property range 64K [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lmb_bram_if_cntlr_1_Mem}]
 set_property range 64K [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_lmb_bram_if_cntlr_0_Mem}]
 validate_bd_design
 save_bd_design
-generate_target all [get_files  C:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio/ublaze-gpio.srcs/sources_1/bd/ublaze_gpio/ublaze_gpio.bd]
-make_wrapper -files [get_files C:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio/ublaze-gpio.srcs/sources_1/bd/ublaze_gpio/ublaze_gpio.bd] -top
-add_files -norecurse c:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio/ublaze-gpio.gen/sources_1/bd/ublaze_gpio/hdl/ublaze_gpio_wrapper.v
+generate_target all [get_files [file join $synth_proj_dir ${proj_name}.srcs sources_1 bd ublaze_gpio ublaze_gpio.bd]]
+make_wrapper -files [get_files [file join $synth_proj_dir ${proj_name}.srcs sources_1 bd ublaze_gpio ublaze_gpio.bd]] -top
+add_files -norecurse [file join $synth_proj_dir ${proj_name}.gen sources_1 bd ublaze_gpio hdl ublaze_gpio_wrapper.v]
 
-add_files -fileset constrs_1 -norecurse C:/Users/mrede/Documents/ee560/ublaze-test1/syn/constr_a7.xdc
+add_files -fileset constrs_1 -norecurse [file join $current_dir syn constr_a7.xdc]
 
 launch_runs impl_1 -to_step write_bitstream -jobs 6
 wait_on_run impl_1
@@ -147,4 +154,4 @@ if {![string match "*write_bitstream Complete*" $impl_status]} {
 }
 
 #open_run impl_1
-write_hw_platform -fixed -include_bit -force -file C:/Users/mrede/Documents/ee560/ublaze-test1/ublaze-gpio/ublaze_gpio_wrapper.xsa
+write_hw_platform -fixed -include_bit -force -file [file join $synth_proj_dir ublaze_gpio_wrapper.xsa]
