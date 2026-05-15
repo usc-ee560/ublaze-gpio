@@ -5,8 +5,20 @@ cd $current_dir
 set repo_dir [file dirname $current_dir]
 set synth_proj_dir [file join $current_dir syn $proj_name]
 
+# Use local board files from repository (no Vivado install changes, no git required)
+set digilent_board_files [file join $current_dir syn board_files]
+if {![file exists $digilent_board_files]} {
+  error "Missing local board files at $digilent_board_files"
+}
+set_param board.repoPaths [list $digilent_board_files]
+catch {refresh_board_repo}
+
 create_project $proj_name $synth_proj_dir -part xc7a100tcsg324-1
-set_property board_part digilentinc.com:arty-a7-100:part0:1.1 [current_project]
+set nexys_board_part [lindex [get_board_parts -quiet "digilentinc.com:nexys-a7-100t:part0:*"] 0]
+if {$nexys_board_part eq ""} {
+  error "Nexys A7 board files not found in [file join $current_dir syn board_files]"
+}
+set_property board_part $nexys_board_part [current_project]
 set_property target_language Verilog [current_project]
 create_bd_design "ublaze_gpio"
 update_compile_order -fileset sources_1
