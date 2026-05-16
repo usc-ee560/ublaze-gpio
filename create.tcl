@@ -52,7 +52,7 @@ set_property -dict [list \
   CONFIG.Read_Width_A {32} \
   CONFIG.Write_Width_B {32} \
   CONFIG.Read_Width_B {32} \
-  CONFIG.Write_Depth_A {16384} \
+  CONFIG.Write_Depth_A {65536} \
 ] [get_bd_cells blk_mem_gen_0]
 
 connect_bd_intf_net [get_bd_intf_pins microblaze_riscv_0/ILMB] [get_bd_intf_pins lmb_bram_if_cntlr_0/SLMB]
@@ -71,12 +71,12 @@ connect_bd_net [get_bd_pins mdm_riscv_0/Debug_SYS_Rst] [get_bd_pins proc_sys_res
 # Explicit local memory ranges for instruction/data LMB spaces
 set_property -dict [list \
   CONFIG.C_BASEADDR {0x00000000} \
-  CONFIG.C_HIGHADDR {0x0000FFFF} \
+  CONFIG.C_HIGHADDR {0x0003FFFF} \
 ] [get_bd_cells lmb_bram_if_cntlr_0]
 
 set_property -dict [list \
   CONFIG.C_BASEADDR {0x00000000} \
-  CONFIG.C_HIGHADDR {0x0000FFFF} \
+  CONFIG.C_HIGHADDR {0x0003FFFF} \
 ] [get_bd_cells lmb_bram_if_cntlr_1]
 
 #set_property offset 0x10000000 [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lmb_bram_if_cntlr_1_Mem}]
